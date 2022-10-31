@@ -1,6 +1,6 @@
-use crate::{SoftFloat, RoundingMode};
+use crate::{SoftFloat, RoundingMode, DEFAULT_ROUNDING_MODE};
 use softfloat_sys::float64_t;
-use std::borrow::Borrow;
+use std::{borrow::Borrow, ops::{Add, Sub, Mul, Div, Rem}};
 
 /// standard 64-bit float
 #[derive(Copy, Clone, Debug)]
@@ -20,6 +20,67 @@ impl concordium_std::Deserial for F64 {
     }
 }
 
+impl num_traits::Zero for F64 {
+    fn zero() -> Self {
+        SoftFloat::positive_zero()
+    }
+
+    fn is_zero(&self) -> bool {
+        SoftFloat::is_zero(self)
+    }
+}
+
+impl num_traits::One for F64 {
+    fn one() -> Self {
+        SoftFloat::from_i8(1, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl Add for F64 {
+    type Output = Self;
+
+    fn add(self, rhs: Self) -> Self::Output {
+        SoftFloat::add(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl Sub for F64 {
+    type Output = Self;
+
+    fn sub(self, rhs: Self) -> Self::Output {
+        SoftFloat::sub(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl Mul for F64 {
+    type Output = Self;
+
+    fn mul(self, rhs: Self) -> Self::Output {
+        SoftFloat::mul(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl Div for F64 {
+    type Output = Self;
+
+    fn div(self, rhs: Self) -> Self::Output {
+        SoftFloat::div(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl Rem for F64 {
+    type Output = Self;
+
+    fn rem(self, rhs: Self) -> Self::Output {
+        SoftFloat::rem(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl PartialEq for F64 {
+    fn eq(&self, other: &Self) -> bool {
+        SoftFloat::eq(self, other)
+    }
+}
 
 impl F64 {
     /// Converts primitive `f32` to `F64`
@@ -212,8 +273,8 @@ impl SoftFloat for F64 {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::ExceptionFlags;
+    use super::F64;
+    use crate::{RoundingMode, SoftFloat, ExceptionFlags};
     use std::cmp::Ordering;
 
     #[test]
@@ -339,13 +400,13 @@ mod tests {
 
         let mut flag = ExceptionFlags::default();
         flag.set();
-        assert_eq!(a.eq(a), false);
+        assert_eq!(a == a, false);
         flag.get();
         assert_eq!(flag.is_invalid(), true);
 
         let mut flag = ExceptionFlags::default();
         flag.set();
-        assert_eq!(b.eq(b), false);
+        assert_eq!(b == b, false);
         flag.get();
         assert_eq!(flag.is_invalid(), false);
 

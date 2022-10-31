@@ -60,6 +60,8 @@ pub enum RoundingMode {
     TiesToAway,
 }
 
+pub const DEFAULT_ROUNDING_MODE: RoundingMode = RoundingMode::TiesToEven;
+
 impl RoundingMode {
     fn set(&self) {
         unsafe {
