@@ -23,9 +23,11 @@ f16                  = []
 f32                  = []
 f64                  = []
 f128                 = []
+concordium           = [ "dep:concordium-std" ]
 
 [dependencies]
 num-traits = "0.2.12"
+concordium-std = { version = "4.0", optional = true }
 
 [dependencies.softfloat-sys]
 version = "0.1.3"

@@ -6,6 +6,21 @@ use std::borrow::Borrow;
 #[derive(Copy, Clone, Debug)]
 pub struct F64(float64_t);
 
+#[cfg(feature = "concordium")]
+impl concordium_std::Serial for F64 {
+    fn serial<W: concordium_std::Write>(&self, out: &mut W) -> Result<(), W::Err> {
+        self.to_bits().serial(out)
+    }
+}
+
+#[cfg(feature = "concordium")]
+impl concordium_std::Deserial for F64 {
+    fn deserial<R: concordium_std::Read>(source: &mut R) -> concordium_std::ParseResult<Self> {
+        Ok(F64::from_bits(u64::deserial(source)?))
+    }
+}
+
+
 impl F64 {
     /// Converts primitive `f32` to `F64`
     #[cfg(feature = "f32")]
