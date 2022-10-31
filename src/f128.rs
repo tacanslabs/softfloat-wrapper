@@ -1,4 +1,4 @@
-use crate::{Float, RoundingMode};
+use crate::{SoftFloat, RoundingMode};
 use softfloat_sys::float128_t;
 use std::borrow::Borrow;
 
@@ -20,7 +20,7 @@ impl F128 {
     }
 }
 
-impl Float for F128 {
+impl SoftFloat for F128 {
     type Payload = u128;
 
     const EXPONENT_BIT: Self::Payload = 0x7fff;

@@ -1,4 +1,4 @@
-use crate::{Float, RoundingMode};
+use crate::{SoftFloat, RoundingMode};
 use softfloat_sys::float16_t;
 use std::borrow::Borrow;
 
@@ -20,7 +20,7 @@ impl F16 {
     }
 }
 
-impl Float for F16 {
+impl SoftFloat for F16 {
     type Payload = u16;
 
     const EXPONENT_BIT: Self::Payload = 0x1f;
