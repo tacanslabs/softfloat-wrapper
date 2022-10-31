@@ -2,7 +2,7 @@
 //!
 //! ## Examples
 //!
-//! ```
+//! ```ignore
 //! use softfloat_wrapper::{Float, F16, RoundingMode};
 //!
 //! fn main() {
@@ -20,14 +20,21 @@
 //!     println!("{} + {} = {}", a, b, d);
 //! }
 //! ```
-
+#[cfg(feature = "f128")]
 mod f128;
+#[cfg(feature = "f16")]
 mod f16;
+#[cfg(feature = "f32")]
 mod f32;
+#[cfg(feature = "f64")]
 mod f64;
+#[cfg(feature = "f128")]
 pub use crate::f128::F128;
+#[cfg(feature = "f16")]
 pub use crate::f16::F16;
+#[cfg(feature = "f32")]
 pub use crate::f32::F32;
+#[cfg(feature = "f64")]
 pub use crate::f64::F64;
 
 use num_traits::{
@@ -75,7 +82,7 @@ impl RoundingMode {
 ///
 /// ## Examples
 ///
-/// ```
+/// ```ignore
 /// use softfloat_wrapper::{ExceptionFlags, Float, RoundingMode, F16};
 ///
 /// let a = 0x0;
@@ -149,7 +156,7 @@ impl ExceptionFlags {
 ///
 /// `Float` can be used for generic functions.
 ///
-/// ```
+/// ```ignore
 /// use softfloat_wrapper::{Float, RoundingMode, F16, F32};
 ///
 /// fn rsqrt<T: Float>(x: T) -> T {
@@ -224,12 +231,16 @@ pub trait Float {
 
     fn to_i64(&self, rnd: RoundingMode, exact: bool) -> i64;
 
+    #[cfg(feature = "f16")]
     fn to_f16(&self, rnd: RoundingMode) -> F16;
 
+    #[cfg(feature = "f32")]
     fn to_f32(&self, rnd: RoundingMode) -> F32;
 
+    #[cfg(feature = "f64")]
     fn to_f64(&self, rnd: RoundingMode) -> F64;
 
+    #[cfg(feature = "f128")]
     fn to_f128(&self, rnd: RoundingMode) -> F128;
 
     fn round_to_integral(&self, rnd: RoundingMode) -> Self;
@@ -472,8 +483,10 @@ pub trait Float {
 
 #[cfg(test)]
 mod tests {
+    #[allow(unused)]
     use super::*;
 
+    #[cfg(feature = "f16")]
     #[test]
     fn flag_inexact() {
         let a = 0x1234;
@@ -491,6 +504,7 @@ mod tests {
         assert!(!flag.is_underflow());
     }
 
+    #[cfg(feature = "f16")]
     #[test]
     fn flag_infinite() {
         let a = 0x1234;
@@ -508,6 +522,7 @@ mod tests {
         assert!(!flag.is_underflow());
     }
 
+    #[cfg(feature = "f16")]
     #[test]
     fn flag_invalid() {
         let a = 0x0;
@@ -525,6 +540,7 @@ mod tests {
         assert!(!flag.is_underflow());
     }
 
+    #[cfg(feature = "f16")]
     #[test]
     fn flag_overflow() {
         let a = 0x7bff;
@@ -542,6 +558,7 @@ mod tests {
         assert!(!flag.is_underflow());
     }
 
+    #[cfg(feature = "f16")]
     #[test]
     fn flag_underflow() {
         let a = 0x0001;

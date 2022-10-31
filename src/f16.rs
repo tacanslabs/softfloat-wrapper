@@ -1,4 +1,4 @@
-use crate::{Float, RoundingMode, F128, F32, F64};
+use crate::{Float, RoundingMode};
 use softfloat_sys::float16_t;
 use std::borrow::Borrow;
 
@@ -8,13 +8,15 @@ pub struct F16(float16_t);
 
 impl F16 {
     /// Converts primitive `f32` to `F16`
+    #[cfg(feature = "f32")]
     pub fn from_f32(v: f32) -> Self {
-        F32::from_bits(v.to_bits()).to_f16(RoundingMode::TiesToEven)
+        super::F32::from_bits(v.to_bits()).to_f16(RoundingMode::TiesToEven)
     }
 
     /// Converts primitive `f64` to `F16`
+    #[cfg(feature = "f64")]
     pub fn from_f64(v: f64) -> Self {
-        F64::from_bits(v.to_bits()).to_f16(RoundingMode::TiesToEven)
+        super::F64::from_bits(v.to_bits()).to_f16(RoundingMode::TiesToEven)
     }
 }
 
@@ -164,25 +166,28 @@ impl Float for F16 {
         Self::from_bits(self.to_bits())
     }
 
-    fn to_f32(&self, rnd: RoundingMode) -> F32 {
+    #[cfg(feature = "f32")]
+    fn to_f32(&self, rnd: RoundingMode) -> super::F32 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f16_to_f32(self.0) };
-        F32::from_bits(ret.v)
+        super::F32::from_bits(ret.v)
     }
 
-    fn to_f64(&self, rnd: RoundingMode) -> F64 {
+    #[cfg(feature = "f64")]
+    fn to_f64(&self, rnd: RoundingMode) -> super::F64 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f16_to_f64(self.0) };
-        F64::from_bits(ret.v)
+        super::F64::from_bits(ret.v)
     }
 
-    fn to_f128(&self, rnd: RoundingMode) -> F128 {
+    #[cfg(feature = "f128")]
+    fn to_f128(&self, rnd: RoundingMode) -> super::F128 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f16_to_f128(self.0) };
         let mut v = 0u128;
         v |= ret.v[0] as u128;
         v |= (ret.v[1] as u128) << 64;
-        F128::from_bits(v)
+        super::F128::from_bits(v)
     }
 
     fn round_to_integral(&self, rnd: RoundingMode) -> Self {
@@ -343,12 +348,14 @@ mod tests {
         assert_eq!(flag.is_invalid(), true);
     }
 
+    #[cfg(feature = "f32")]
     #[test]
     fn from_f32() {
         let a = F16::from_f32(0.1);
         assert_eq!(a.to_bits(), 0x2e66);
     }
 
+    #[cfg(feature = "f64")]
     #[test]
     fn from_f64() {
         let a = F16::from_f64(0.1);

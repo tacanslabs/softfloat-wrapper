@@ -1,4 +1,4 @@
-use crate::{Float, RoundingMode, F16, F32, F64};
+use crate::{Float, RoundingMode};
 use softfloat_sys::float128_t;
 use std::borrow::Borrow;
 
@@ -8,13 +8,15 @@ pub struct F128(float128_t);
 
 impl F128 {
     /// Converts primitive `f32` to `F128`
+    #[cfg(feature = "f32")]
     pub fn from_f32(v: f32) -> Self {
-        F32::from_bits(v.to_bits()).to_f128(RoundingMode::TiesToEven)
+        super::F32::from_bits(v.to_bits()).to_f128(RoundingMode::TiesToEven)
     }
 
     /// Converts primitive `f64` to `F128`
+    #[cfg(feature = "f64")]
     pub fn from_f64(v: f64) -> Self {
-        F64::from_bits(v.to_bits()).to_f128(RoundingMode::TiesToEven)
+        super::F64::from_bits(v.to_bits()).to_f128(RoundingMode::TiesToEven)
     }
 }
 
@@ -165,22 +167,25 @@ impl Float for F128 {
         ret
     }
 
-    fn to_f16(&self, rnd: RoundingMode) -> F16 {
+    #[cfg(feature = "f16")]
+    fn to_f16(&self, rnd: RoundingMode) -> super::F16 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f128_to_f16(self.0) };
-        F16::from_bits(ret.v)
+        super::F16::from_bits(ret.v)
     }
 
-    fn to_f32(&self, rnd: RoundingMode) -> F32 {
+    #[cfg(feature = "f32")]
+    fn to_f32(&self, rnd: RoundingMode) -> super::F32 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f128_to_f32(self.0) };
-        F32::from_bits(ret.v)
+        super::F32::from_bits(ret.v)
     }
 
-    fn to_f64(&self, rnd: RoundingMode) -> F64 {
+    #[cfg(feature = "f64")]
+    fn to_f64(&self, rnd: RoundingMode) -> super::F64 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f128_to_f64(self.0) };
-        F64::from_bits(ret.v)
+        super::F64::from_bits(ret.v)
     }
 
     fn to_f128(&self, _rnd: RoundingMode) -> F128 {
@@ -348,12 +353,14 @@ mod tests {
         assert_eq!(flag.is_invalid(), true);
     }
 
+    #[cfg(feature = "f32")]
     #[test]
     fn from_f32() {
         let a = F128::from_f32(0.1);
         assert_eq!(a.to_bits(), 0x3ffb99999a0000000000000000000000);
     }
 
+    #[cfg(feature = "f64")]
     #[test]
     fn from_f64() {
         let a = F128::from_f64(0.1);

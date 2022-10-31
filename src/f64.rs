@@ -1,4 +1,4 @@
-use crate::{Float, RoundingMode, F128, F16, F32};
+use crate::{Float, RoundingMode};
 use softfloat_sys::float64_t;
 use std::borrow::Borrow;
 
@@ -8,8 +8,9 @@ pub struct F64(float64_t);
 
 impl F64 {
     /// Converts primitive `f32` to `F64`
+    #[cfg(feature = "f32")]
     pub fn from_f32(v: f32) -> Self {
-        F32::from_bits(v.to_bits()).to_f64(RoundingMode::TiesToEven)
+        super::F32::from_bits(v.to_bits()).to_f64(RoundingMode::TiesToEven)
     }
 
     /// Converts primitive `f64` to `F64`
@@ -160,29 +161,32 @@ impl Float for F64 {
         ret
     }
 
-    fn to_f16(&self, rnd: RoundingMode) -> F16 {
+    #[cfg(feature = "f16")]
+    fn to_f16(&self, rnd: RoundingMode) -> super::F16 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f64_to_f16(self.0) };
-        F16::from_bits(ret.v)
+        super::F16::from_bits(ret.v)
     }
 
-    fn to_f32(&self, rnd: RoundingMode) -> F32 {
+    #[cfg(feature = "f16")]
+    fn to_f32(&self, rnd: RoundingMode) -> super::F32 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f64_to_f32(self.0) };
-        F32::from_bits(ret.v)
+        super::F32::from_bits(ret.v)
     }
 
     fn to_f64(&self, _rnd: RoundingMode) -> F64 {
         Self::from_bits(self.to_bits())
     }
 
-    fn to_f128(&self, rnd: RoundingMode) -> F128 {
+    #[cfg(feature = "f128")]
+    fn to_f128(&self, rnd: RoundingMode) -> super::F128 {
         rnd.set();
         let ret = unsafe { softfloat_sys::f64_to_f128(self.0) };
         let mut v = 0u128;
         v |= ret.v[0] as u128;
         v |= (ret.v[1] as u128) << 64;
-        F128::from_bits(v)
+        super::F128::from_bits(v)
     }
 
     fn round_to_integral(&self, rnd: RoundingMode) -> Self {
@@ -343,12 +347,14 @@ mod tests {
         assert_eq!(flag.is_invalid(), true);
     }
 
+    #[cfg(feature = "f32")]
     #[test]
     fn from_f32() {
         let a = F64::from_f32(0.1);
         assert_eq!(a.to_bits(), 0x3fb99999a0000000);
     }
 
+    #[cfg(feature = "f64")]
     #[test]
     fn from_f64() {
         let a = F64::from_f64(0.1);

@@ -13,12 +13,16 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default              = ["8086-sse"]
+default              = ["8086-sse", "f16", "f32", "f64", "f128"]
 8086                 = ["softfloat-sys/8086"]
 8086-sse             = ["softfloat-sys/8086-sse"]
 arm-vfpv2            = ["softfloat-sys/arm-vfpv2"]
 arm-vfpv2-defaultnan = ["softfloat-sys/arm-vfpv2-defaultnan"]
 riscv                = ["softfloat-sys/riscv"]
+f16                  = []
+f32                  = []
+f64                  = []
+f128                 = []
 
 [dependencies]
 num-traits = "0.2.12"
