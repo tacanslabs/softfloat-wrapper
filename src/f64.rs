@@ -82,6 +82,54 @@ impl PartialEq for F64 {
     }
 }
 
+impl From<i8> for F64 {
+    fn from(value: i8) -> Self {
+        SoftFloat::from_i8(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<i16> for F64 {
+    fn from(value: i16) -> Self {
+        SoftFloat::from_i16(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<i32> for F64 {
+    fn from(value: i32) -> Self {
+        SoftFloat::from_i32(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<i64> for F64 {
+    fn from(value: i64) -> Self {
+        SoftFloat::from_i64(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<u8> for F64 {
+    fn from(value: u8) -> Self {
+        SoftFloat::from_u8(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<u16> for F64 {
+    fn from(value: u16) -> Self {
+        SoftFloat::from_u16(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<u32> for F64 {
+    fn from(value: u32) -> Self {
+        SoftFloat::from_u32(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<u64> for F64 {
+    fn from(value: u64) -> Self {
+        SoftFloat::from_u64(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
 impl F64 {
     /// Converts primitive `f32` to `F64`
     #[cfg(feature = "f32")]
@@ -92,6 +140,10 @@ impl F64 {
     /// Converts primitive `f64` to `F64`
     pub fn from_f64(v: f64) -> Self {
         Self::from_bits(v.to_bits())
+    }
+
+    pub fn sqrt(&self) -> Self {
+        SoftFloat::sqrt(self, DEFAULT_ROUNDING_MODE)
     }
 }
 
@@ -367,7 +419,7 @@ mod tests {
     fn f64_sqrt() {
         let a = 0x76546410aaaaaaaa;
         let a0 = F64::from_bits(a);
-        let d0 = a0.sqrt(RoundingMode::TiesToEven);
+        let d0 = SoftFloat::sqrt(&a0, RoundingMode::TiesToEven);
         let a1 = simple_soft_float::F64::from_bits(a);
         let d1 = a1.sqrt(Some(simple_soft_float::RoundingMode::TiesToEven), None);
         assert_eq!(d0.to_bits(), *d1.bits());
