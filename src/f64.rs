@@ -20,6 +20,22 @@ impl concordium_std::Deserial for F64 {
     }
 }
 
+#[cfg(feature = "near")]
+impl near_sdk::borsh::BorshSerialize for F64 {
+    fn serialize<W: std::io::Write>(&self, writer: &mut W) -> std::io::Result<()> {
+        self.to_bits().serialize(writer)
+    }
+}
+
+#[cfg(feature = "near")]
+impl near_sdk::borsh::BorshDeserialize for F64 {
+    fn deserialize(buf: &mut &[u8]) -> std::io::Result<Self> {
+        Ok(Self::from_bits(
+            <Self as SoftFloat>::Payload::deserialize(buf)?
+        ))
+    }
+}
+
 impl num_traits::Zero for F64 {
     fn zero() -> Self {
         SoftFloat::positive_zero()
