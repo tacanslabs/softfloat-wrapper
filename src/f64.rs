@@ -36,6 +36,12 @@ impl near_sdk::borsh::BorshDeserialize for F64 {
     }
 }
 
+impl Default for F64 {
+    fn default() -> Self {
+        num_traits::Zero::zero()
+    }
+}
+
 impl num_traits::Zero for F64 {
     fn zero() -> Self {
         SoftFloat::positive_zero()
