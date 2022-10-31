@@ -1,4 +1,4 @@
-use crate::{SoftFloat, RoundingMode, DEFAULT_ROUNDING_MODE};
+use crate::{SoftFloat, RoundingMode, DEFAULT_ROUNDING_MODE, DEFAULT_EXACT_MODE};
 use softfloat_sys::float64_t;
 use std::{borrow::Borrow, ops::{Add, Sub, Mul, Div, Rem}};
 
@@ -127,6 +127,18 @@ impl From<u32> for F64 {
 impl From<u64> for F64 {
     fn from(value: u64) -> Self {
         SoftFloat::from_u64(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<F64> for i128 {
+    fn from(value: F64) -> Self {
+        SoftFloat::to_i64(&value, DEFAULT_ROUNDING_MODE, DEFAULT_EXACT_MODE) as i128
+    }
+}
+
+impl From<F64> for u128 {
+    fn from(value: F64) -> Self {
+        SoftFloat::to_u64(&value, DEFAULT_ROUNDING_MODE, DEFAULT_EXACT_MODE) as u128
     }
 }
 

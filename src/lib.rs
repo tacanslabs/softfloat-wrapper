@@ -61,6 +61,7 @@ pub enum RoundingMode {
 }
 
 pub const DEFAULT_ROUNDING_MODE: RoundingMode = RoundingMode::TiesToEven;
+pub const DEFAULT_EXACT_MODE: bool = true;
 
 impl RoundingMode {
     fn set(&self) {
