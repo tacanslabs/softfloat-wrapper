@@ -1,6 +1,6 @@
 use crate::{SoftFloat, RoundingMode, DEFAULT_ROUNDING_MODE, DEFAULT_EXACT_MODE};
 use softfloat_sys::float64_t;
-use std::{borrow::Borrow, ops::{Add, Sub, Mul, Div, Rem}};
+use std::{borrow::Borrow, ops::{Add, Sub, Mul, Div, Rem, AddAssign, SubAssign, MulAssign, DivAssign, RemAssign}};
 
 /// standard 64-bit float
 #[derive(Copy, Clone, Debug)]
@@ -44,11 +44,23 @@ impl Add for F64 {
     }
 }
 
+impl AddAssign for F64 {
+    fn add_assign(&mut self, rhs: Self) {
+        *self = *self + rhs;
+    }
+}
+
 impl Sub for F64 {
     type Output = Self;
 
     fn sub(self, rhs: Self) -> Self::Output {
         SoftFloat::sub(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl SubAssign for F64 {
+    fn sub_assign(&mut self, rhs: Self) {
+        *self = *self - rhs;
     }
 }
 
@@ -60,11 +72,23 @@ impl Mul for F64 {
     }
 }
 
+impl MulAssign for F64 {
+    fn mul_assign(&mut self, rhs: Self) {
+        *self = *self * rhs;
+    }
+}
+
 impl Div for F64 {
     type Output = Self;
 
     fn div(self, rhs: Self) -> Self::Output {
         SoftFloat::div(&self, rhs, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl DivAssign for F64 {
+    fn div_assign(&mut self, rhs: Self) {
+        *self = *self / rhs;
     }
 }
 
@@ -76,9 +100,34 @@ impl Rem for F64 {
     }
 }
 
+impl RemAssign for F64 {
+    fn rem_assign(&mut self, rhs: Self) {
+        *self = *self % rhs;
+    }
+}
+
 impl PartialEq for F64 {
     fn eq(&self, other: &Self) -> bool {
         SoftFloat::eq(self, other)
+    }
+}
+
+impl PartialOrd for F64 {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        SoftFloat::compare(self, other)
+    }
+}
+
+#[cfg(feature = "f32")]
+impl From<f32> for F64 {
+    fn from(value: f32) -> Self {
+        F64::from_f32(value)
+    }
+}
+
+impl From<f64> for F64 {
+    fn from(value: f64) -> Self {
+        F64::from_f64(value)
     }
 }
 
@@ -127,6 +176,12 @@ impl From<u32> for F64 {
 impl From<u64> for F64 {
     fn from(value: u64) -> Self {
         SoftFloat::from_u64(value, DEFAULT_ROUNDING_MODE)
+    }
+}
+
+impl From<u128> for F64 {
+    fn from(value: u128) -> Self {
+        SoftFloat::from_u64(value as u64, DEFAULT_ROUNDING_MODE)
     }
 }
 
