@@ -13,7 +13,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [features]
-default              = ["8086-sse"]
+default              = ["8086"]
 8086                 = ["softfloat-sys/8086"]
 8086-sse             = ["softfloat-sys/8086-sse"]
 arm-vfpv2            = ["softfloat-sys/arm-vfpv2"]
@@ -24,7 +24,8 @@ riscv                = ["softfloat-sys/riscv"]
 num-traits = "0.2.12"
 
 [dependencies.softfloat-sys]
-version = "0.1.3"
+git = "https://github.com/tacanslabs/softfloat-sys"
+branch = "compile-only-f64"
 default-features = false
 
 [dev-dependencies]
