@@ -177,7 +177,7 @@ pub trait SoftFloat {
     type Payload: PrimInt + UpperHex + LowerHex;
 
     const EXPONENT_BIT: Self::Payload;
-    const FRACTION_BIT: Self::Payload;
+    const MANTISSA_BIT: Self::Payload;
     const SIGN_POS: usize;
     const EXPONENT_POS: usize;
 
@@ -326,8 +326,8 @@ pub trait SoftFloat {
     }
 
     #[inline]
-    fn fraction(&self) -> Self::Payload {
-        self.to_bits() & Self::FRACTION_BIT
+    fn mantissa(&self) -> Self::Payload {
+        self.to_bits() & Self::MANTISSA_BIT
     }
 
     #[inline]
@@ -339,14 +339,14 @@ pub trait SoftFloat {
     fn is_positive_zero(&self) -> bool {
         self.is_positive()
             && self.exponent() == Self::Payload::zero()
-            && self.fraction() == Self::Payload::zero()
+            && self.mantissa() == Self::Payload::zero()
     }
 
     #[inline]
     fn is_positive_subnormal(&self) -> bool {
         self.is_positive()
             && self.exponent() == Self::Payload::zero()
-            && self.fraction() != Self::Payload::zero()
+            && self.mantissa() != Self::Payload::zero()
     }
 
     #[inline]
@@ -360,7 +360,7 @@ pub trait SoftFloat {
     fn is_positive_infinity(&self) -> bool {
         self.is_positive()
             && self.exponent() == Self::EXPONENT_BIT
-            && self.fraction() == Self::Payload::zero()
+            && self.mantissa() == Self::Payload::zero()
     }
 
     #[inline]
@@ -372,14 +372,14 @@ pub trait SoftFloat {
     fn is_negative_zero(&self) -> bool {
         self.is_negative()
             && self.exponent() == Self::Payload::zero()
-            && self.fraction() == Self::Payload::zero()
+            && self.mantissa() == Self::Payload::zero()
     }
 
     #[inline]
     fn is_negative_subnormal(&self) -> bool {
         self.is_negative()
             && self.exponent() == Self::Payload::zero()
-            && self.fraction() != Self::Payload::zero()
+            && self.mantissa() != Self::Payload::zero()
     }
 
     #[inline]
@@ -393,12 +393,12 @@ pub trait SoftFloat {
     fn is_negative_infinity(&self) -> bool {
         self.is_negative()
             && self.exponent() == Self::EXPONENT_BIT
-            && self.fraction() == Self::Payload::zero()
+            && self.mantissa() == Self::Payload::zero()
     }
 
     #[inline]
     fn is_nan(&self) -> bool {
-        self.exponent() == Self::EXPONENT_BIT && self.fraction() != Self::Payload::zero()
+        self.exponent() == Self::EXPONENT_BIT && self.mantissa() != Self::Payload::zero()
     }
 
     #[inline]
@@ -428,8 +428,8 @@ pub trait SoftFloat {
     }
 
     #[inline]
-    fn set_fraction(&mut self, x: Self::Payload) {
-        self.set_payload((self.to_bits() & !Self::FRACTION_BIT) | (x & Self::FRACTION_BIT));
+    fn set_mantissa(&mut self, x: Self::Payload) {
+        self.set_payload((self.to_bits() & !Self::MANTISSA_BIT) | (x & Self::MANTISSA_BIT));
     }
 
     #[inline]
@@ -479,7 +479,7 @@ pub trait SoftFloat {
     {
         let mut x = Self::from_bits(Self::Payload::zero());
         x.set_exponent(Self::EXPONENT_BIT);
-        x.set_fraction(Self::Payload::one() << (Self::EXPONENT_POS - 1));
+        x.set_mantissa(Self::Payload::one() << (Self::EXPONENT_POS - 1));
         x
     }
 }
