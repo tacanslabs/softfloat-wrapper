@@ -21,7 +21,9 @@
 //! }
 //! ```
 
+mod f32;
 mod f64;
+pub use crate::f32::F32;
 pub use crate::f64::F64;
 
 use num_traits::{
@@ -144,7 +146,7 @@ impl ExceptionFlags {
 /// `Float` can be used for generic functions.
 ///
 /// ```
-/// use softfloat_wrapper::{Float, RoundingMode, F64};
+/// use softfloat_wrapper::{Float, RoundingMode, F64, F32};
 ///
 /// fn rsqrt<T: Float>(x: T) -> T {
 ///     let ret = x.sqrt(RoundingMode::TiesToEven);
@@ -153,6 +155,8 @@ impl ExceptionFlags {
 /// }
 ///
 /// let a = F64::from_bits(0x12345678_12345678);
+/// let a = rsqrt(a);
+/// let a = F32::from_bits(0x12345678);
 /// let a = rsqrt(a);
 /// ```
 pub trait Float {
@@ -215,6 +219,8 @@ pub trait Float {
     fn to_i32(&self, rnd: RoundingMode, exact: bool) -> i32;
 
     fn to_i64(&self, rnd: RoundingMode, exact: bool) -> i64;
+
+    fn to_f32(&self, rnd: RoundingMode) -> F32;
 
     fn to_f64(&self, rnd: RoundingMode) -> F64;
 
