@@ -3,30 +3,26 @@
 //! ## Examples
 //!
 //! ```
-//! use softfloat_wrapper::{Float, F16, RoundingMode};
+//! use softfloat_wrapper::{Float, F64, RoundingMode};
 //!
 //! fn main() {
 //!     let a = 0x1234;
 //!     let b = 0x1479;
 //!
-//!     let a = F16::from_bits(a);
-//!     let b = F16::from_bits(b);
+//!     let a = F64::from_bits(a);
+//!     let b = F64::from_bits(b);
 //!     let d = a.add(b, RoundingMode::TiesToEven);
 //!
-//!     let a = f32::from_bits(a.to_f32(RoundingMode::TiesToEven).to_bits());
-//!     let b = f32::from_bits(b.to_f32(RoundingMode::TiesToEven).to_bits());
-//!     let d = f32::from_bits(d.to_f32(RoundingMode::TiesToEven).to_bits());
+//!     let a = f64::from_bits(a.to_f64(RoundingMode::TiesToEven).to_bits());
+//!     let b = f64::from_bits(b.to_f64(RoundingMode::TiesToEven).to_bits());
+//!     let d = f64::from_bits(d.to_f64(RoundingMode::TiesToEven).to_bits());
 //!
 //!     println!("{} + {} = {}", a, b, d);
 //! }
 //! ```
 
-mod f128;
-mod f16;
 mod f32;
 mod f64;
-pub use crate::f128::F128;
-pub use crate::f16::F16;
 pub use crate::f32::F32;
 pub use crate::f64::F64;
 
@@ -76,12 +72,12 @@ impl RoundingMode {
 /// ## Examples
 ///
 /// ```
-/// use softfloat_wrapper::{ExceptionFlags, Float, RoundingMode, F16};
+/// use softfloat_wrapper::{ExceptionFlags, Float, RoundingMode, F64};
 ///
 /// let a = 0x0;
 /// let b = 0x0;
-/// let a = F16::from_bits(a);
-/// let b = F16::from_bits(b);
+/// let a = F64::from_bits(a);
+/// let b = F64::from_bits(b);
 /// let mut flag = ExceptionFlags::default();
 /// flag.set();
 /// let _d = a.div(b, RoundingMode::TiesToEven);
@@ -150,7 +146,7 @@ impl ExceptionFlags {
 /// `Float` can be used for generic functions.
 ///
 /// ```
-/// use softfloat_wrapper::{Float, RoundingMode, F16, F32};
+/// use softfloat_wrapper::{Float, RoundingMode, F64, F32};
 ///
 /// fn rsqrt<T: Float>(x: T) -> T {
 ///     let ret = x.sqrt(RoundingMode::TiesToEven);
@@ -158,7 +154,7 @@ impl ExceptionFlags {
 ///     one.div(ret, RoundingMode::TiesToEven)
 /// }
 ///
-/// let a = F16::from_bits(0x1234);
+/// let a = F64::from_bits(0x12345678_12345678);
 /// let a = rsqrt(a);
 /// let a = F32::from_bits(0x12345678);
 /// let a = rsqrt(a);
@@ -224,13 +220,9 @@ pub trait Float {
 
     fn to_i64(&self, rnd: RoundingMode, exact: bool) -> i64;
 
-    fn to_f16(&self, rnd: RoundingMode) -> F16;
-
     fn to_f32(&self, rnd: RoundingMode) -> F32;
 
     fn to_f64(&self, rnd: RoundingMode) -> F64;
-
-    fn to_f128(&self, rnd: RoundingMode) -> F128;
 
     fn round_to_integral(&self, rnd: RoundingMode) -> Self;
 
@@ -478,8 +470,8 @@ mod tests {
     fn flag_inexact() {
         let a = 0x1234;
         let b = 0x7654;
-        let a = F16::from_bits(a);
-        let b = F16::from_bits(b);
+        let a = F64::from_bits(a);
+        let b = F64::from_bits(b);
         let mut flag = ExceptionFlags::default();
         flag.set();
         let _d = a.add(b, RoundingMode::TiesToEven);
@@ -495,8 +487,8 @@ mod tests {
     fn flag_infinite() {
         let a = 0x1234;
         let b = 0x0;
-        let a = F16::from_bits(a);
-        let b = F16::from_bits(b);
+        let a = F64::from_bits(a);
+        let b = F64::from_bits(b);
         let mut flag = ExceptionFlags::default();
         flag.set();
         let _d = a.div(b, RoundingMode::TiesToEven);
@@ -512,8 +504,8 @@ mod tests {
     fn flag_invalid() {
         let a = 0x0;
         let b = 0x0;
-        let a = F16::from_bits(a);
-        let b = F16::from_bits(b);
+        let a = F64::from_bits(a);
+        let b = F64::from_bits(b);
         let mut flag = ExceptionFlags::default();
         flag.set();
         let _d = a.div(b, RoundingMode::TiesToEven);
@@ -529,8 +521,8 @@ mod tests {
     fn flag_overflow() {
         let a = 0x7bff;
         let b = 0x7bff;
-        let a = F16::from_bits(a);
-        let b = F16::from_bits(b);
+        let a = F64::from_bits(a);
+        let b = F64::from_bits(b);
         let mut flag = ExceptionFlags::default();
         flag.set();
         let _d = a.add(b, RoundingMode::TiesToEven);
@@ -546,8 +538,8 @@ mod tests {
     fn flag_underflow() {
         let a = 0x0001;
         let b = 0x0001;
-        let a = F16::from_bits(a);
-        let b = F16::from_bits(b);
+        let a = F64::from_bits(a);
+        let b = F64::from_bits(b);
         let mut flag = ExceptionFlags::default();
         flag.set();
         let _d = a.mul(b, RoundingMode::TiesToEven);
