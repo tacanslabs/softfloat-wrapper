@@ -23,7 +23,7 @@ num-traits = "0.2.12"
 
 [dependencies.softfloat-sys]
 git = "https://github.com/tacanslabs/softfloat-sys.git"
-rev = "6a844bd991bb260e5b73b9980a233c598e6e7f3c"
+rev = "2f5744276acb89fc80e275d2f04e497365216e53"
 
 [dev-dependencies]
 simple-soft-float = "0.1.0"
